@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tier List Animali Interattiva</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #202020;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Contenitore principale della Tier List */
+        .tier-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+
+        /* Righe delle Tier (S, A, B...) */
+        .tier-row {
+            display: flex;
+            height: 80px;
+            border: 2px solid #444;
+        }
+
+        .tier-label {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2em;
+            color: #333; /* Colore testo etichetta */
+        }
+
+        .tier-content {
+            flex-grow: 1;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            gap: 5px;
+            transition: background-color 0.2s;
+        }
+
+        /* Colori per le tier */
+        .s-tier .tier-label { background-color: #ff7f7f; }
+        .a-tier .tier-label { background-color: #ffbf7f; }
+        .b-tier .tier-label { background-color: #ffdf7f; }
+        .c-tier .tier-label { background-color: #ffff7f; color: #333;}
+        .d-tier .tier-label { background-color: #bfff7f; }
+
+        /* Area di partenza (Pool) */
+        .pool-container {
+            width: 100%;
+            max-width: 800px;
+            min-height: 120px;
+            background-color: #444;
+            border: 2px dashed #666;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 10px;
+            align-content: flex-start;
+        }
+
+        .pool-label {
+            width: 100%;
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        /* I mattoni degli animali */
+        .animal-block {
+            width: 80px;
+            height: 80px;
+            background-color: #fff;
+            color: #222;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-align: center;
+            padding: 5px;
+            transition: transform 0.1s;
+        }
+
+        .animal-block:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .animal-block.dragging {
+            opacity: 0.5;
+            border: 2px dashed #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Tier List Animali</h1>
+
+    <!-- Area delle Tier -->
+    <div class="tier-container">
+        <!-- Tier S -->
+        <div class="tier-row s-tier">
+            <div class="tier-label">S</div>
+            <div class="tier-content" id="s-tier"></div>
+        </div>
+        <!-- Tier A -->
+        <div class="tier-row a-tier">
+            <div class="tier-label">A</div>
+            <div class="tier-content" id="a-tier"></div>
+        </div>
+        <!-- Tier B -->
+        <div class="tier-row b-tier">
+            <div class="tier-label">B</div>
+            <div class="tier-content" id="b-tier"></div>
+        </div>
+        <!-- Tier C -->
+        <div class="tier-row c-tier">
+            <div class="tier-label">C</div>
+            <div class="tier-content" id="c-tier"></div>
+        </div>
+        <!-- Tier D -->
+        <div class="tier-row d-tier">
+            <div class="tier-label">D</div>
+            <div class="tier-content" id="d-tier"></div>
+        </div>
+    </div>
+
+    <!-- Area di partenza (Pool) -->
+    <div class="pool-container" id="pool">
+        <div class="pool-label">Trascina gli animali qui sotto per assegnarli</div>
+        <!-- Gli animali verranno generati via JS o inseriti qui manualmente -->
+        <div class="animal-block" draggable="true" id="anim1">🦁 Leone</div>
+        <div class="animal-block" draggable="true" id="anim2">🐘 Elefante</div>
+        <div class="animal-block" draggable="true" id="anim3">🐅 Tigre</div>
+        <div class="animal-block" draggable="true" id="anim4">🐻 Orso</div>
+        <div class="animal-block" draggable="true" id="anim5">🐺 Lupo</div>
+        <div class="animal-block" draggable="true" id="anim6">🦊 Volpe</div>
+        <div class="animal-block" draggable="true" id="anim7">🐕 Cane</div>
+        <div class="animal-block" draggable="true" id="anim8">🐈 Gatto</div>
+        <div class="animal-block" draggable="true" id="anim9">🦅 Aquila</div>
+        <div class="animal-block" draggable="true" id="anim10">🐇 Coniglio</div>
+    </div>
+
+    <script>
+        const draggables = document.querySelectorAll('.animal-block');
+        const containers = document.querySelectorAll('.tier-content, .pool-container');
+
+        // Aggiunge gli eventi ai mattoni degli animali
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        // Gestione dei contenitori (Tier e Pool)
+        containers.forEach(container => {
+            container.addEventListener('dragover', e => {
+                e.preventDefault(); // Necessario per permettere il drop
+                
+                const afterElement = getDragAfterElement(container, e.clientX, e.clientY);
+                const draggable = document.querySelector('.dragging');
+                
+                if (afterElement == null) {
+                    container.appendChild(draggable);
+                } else {
+                    container.insertBefore(draggable, afterElement);
+                }
+            });
+        });
+
+        // Funzione per calcolare dove inserire l'elemento (basata sulla posizione del mouse)
+        function getDragAfterElement(container, x, y) {
+            // Seleziona tutti gli elementi trascinabili nel container eccetto quello che stiamo trascinando
+            const draggableElements = [...container.querySelectorAll('.animal-block:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                
+                // Calcoliamo la distanza tra il cursore e il centro dell'elemento child
+                // Nota: Qui usiamo una logica mista X/Y per supportare sia liste orizzontali che verticali
+                // Ma per un layout flex wrap, controlliamo principalmente l'altezza (Y) e larghezza (X)
+                
+                const offsetX = x - box.left - box.width / 2;
+                const offsetY = y - box.top - box.height / 2;
+
+                // Se il cursore è a sinistra o sopra il centro dell'elemento
+                if (offsetX < 0 && offsetY > -box.height/2 && offsetY < box.height/2) {
+                    if (offsetX > closest.offset) {
+                        return { offset: offsetX, element: child };
+                    }
+                } else {
+                     // Fallback se non c'è spazio laterale: inserisci alla fine o in base all'altezza
+                     // Per semplicità in questo layout flessibile, torniamo null se non troviamo un "slot" preciso a sinistra
+                     return closest;
+                }
+                
+                return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    </script>
+
+</body>
+</html>
