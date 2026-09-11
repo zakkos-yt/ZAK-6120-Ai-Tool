@@ -453,3 +453,9 @@ Consultate il file `LICENSE` per il testo completo.
 
 Sentitevi liberi di studiarli e modificarli per adattarli al vostro
 hardware e al vostro modo di lavorare.
+
+## Link
+
+Il mio canale Youtube: https://www.youtube.com/@zakkos
+Se questi strumenti vi sono stati utili e volete supportare il mio lavoro:
+https://www.paypal.me/zakkos
