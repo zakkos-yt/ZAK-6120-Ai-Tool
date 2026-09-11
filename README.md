@@ -118,6 +118,7 @@ wget -O text_encoders/t5xxl_fp8_e4m3fn.safetensors \
 
 wget -O vae/ae.safetensors \
 "https://huggingface.co/flux-safetensors/flux-safetensors/resolve/main/ae.safetensors?download=true"
+```
 
 Posizione dei file:
 
